@@ -1,5 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
+
 export default class User extends Model{
   static init(sequelize){
     super.init({
@@ -16,6 +17,9 @@ export default class User extends Model{
       email: {
         type: Sequelize.STRING,
         defaultValue: '',
+        unique:{
+          msg:'Email já existe',
+        },
         validate: {
           isEmail:{
             msg: 'Campo email inválido'
