@@ -7,51 +7,56 @@ dotenv.config();
 const tokenSecret = process.env.TOKEN_SECRET;
 const tokenExpiration = process.env.TOKEN_EXPIRATION;
 
-class TokenController{
+class TokenController {
 
-  async getToken(req, res){
-    const {id} = req.params;
-    if(!id)
-      return res.status(400).json({erros:'Id is missing'});
-
-    if(!await User.findByPk(id))
-      return res.status(400).json({erros:'User not found'});
-    const token = this.createToken(id);
-
-    res.json(token);
+  constructor(){
+    this.Store = this.Store.bind(this);
   }
 
-  createToken(id){
-    const token = jwt.sign({id}, tokenSecret,{
-    expiresIn: tokenExpiration
-  });
-    return token;
-  }
-
-
-  async refreshToken(req, res){
-    const {token} = req.body;
-    if(!token)
-      return res.status(400).json({erros:'token is missing in body'});
-
-    const decoded = this.verifyToken(token);
-
-    if(!decoded)
-      return res.status(400).json({erros:'invalid token'});
-
-    const newToken = this.createToken(decoded.id)
-    res.json({token: newToken})
-  }
-
-  verifyToken(token){
+  async Store(req, res) {
     try {
-      return jwt.verify(token, tokenSecret);
-    } catch (error) {
+
+      const{errors, user} = this.processData(req.body);
+      if(errors.length > 0) return res.status(401).json({errors});
+
+      const {id} = user;
+      const token = this.createToken({id, email});
+
+      res.send({ token });
+
+    }
+    catch (error) {
       console.log(error);
-      return null;
+      res.status(500).json({ errors: ["internal server error"] });
     }
   }
 
+  async processData(body){
+
+    const errors = [];
+
+    if (!body.email || !body.password)
+      errors.push("Invalid Credentials");
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user)
+      errors.push("User not found")
+
+    if (!await user.passwordIsValid(password))
+      errors.push("Invalid password");
+
+    return {errors, user};
+  }
+
+  createToken(data) {
+
+    const token = jwt.sign({ id: data.id, email: data.email }, tokenSecret, {
+      expiresIn: tokenExpiration
+    });
+
+    return token;
+  }
 }
 
 export default new TokenController;
