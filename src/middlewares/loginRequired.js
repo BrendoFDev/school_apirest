@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 import jwt from "jsonwebtoken";
+import User from '../models/User';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -15,6 +17,11 @@ export default (req, res, next) => {
     const dados = jwt.verify(token, process.env.TOKEN_SECRET);
     const {id, email} = dados;
 
+    if(!userExists(id,email)){
+      console.log(error)
+      return res.status(401).json({errors:['Invalid User']});
+    }
+
     req.userId = id;
     req.useEmail = email;
     return next();
@@ -24,4 +31,14 @@ export default (req, res, next) => {
     console.log(error)
     return res.status(401).json({errors:['Token is expired or invalid']});
   }
+}
+
+const userExists = (id,email)=>{
+  return User.findOne({
+    where:
+    {
+      id,
+      email
+    }
+  });
 }

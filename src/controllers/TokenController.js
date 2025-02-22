@@ -16,11 +16,12 @@ class TokenController {
   async Store(req, res) {
     try {
 
-      const{errors, user} = this.processData(req.body);
+      const {errors, user} = await this.processData(req.body);
+      console.log(errors, user)
       if(errors.length > 0) return res.status(401).json({errors});
 
       const {id} = user;
-      const token = this.createToken({id, email});
+      const token = this.createToken({id ,email: req.body.email});
 
       res.send({ token });
 
@@ -34,14 +35,19 @@ class TokenController {
   async processData(body){
 
     const errors = [];
+    const {email, password} = body;
 
-    if (!body.email || !body.password)
+    if (!email || !password)
+    {
       errors.push("Invalid Credentials");
-
+      return {errors, user: null}
+    }
     const user = await User.findOne({ where: { email } });
 
-    if (!user)
-      errors.push("User not found")
+    if (!user){
+      errors.push("User not found");
+      return {errors, user: null}
+    }
 
     if (!await user.passwordIsValid(password))
       errors.push("Invalid password");

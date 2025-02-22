@@ -9,7 +9,7 @@ class UserController{
   async create(req, res){
     try {
       const user = await this.createUser(req.body);
-      return res.status(201).json(user);
+      return res.status(201).json({id:user.id, nome: user.nome, email:user.email});
     }
     catch (error) {
       return res.status(400).json({
@@ -28,42 +28,15 @@ class UserController{
     return newUser;
   }
 
-
-  async index(req, res){
-    try{
-      const users = await User.findAll();
-      return res.json(users);
-    }
-    catch(err){
-      console.log(err);
-      res.status(400).json(null)
-    }
-  }
-
-  async show(req, res){
-    try{
-      const { id } = req.params;
-      const users = await User.findByPk(id);
-      if(!users)
-        return res.status(204);
-
-      return res.json(users);
-    }
-    catch(err){
-      console.log(err);
-      res.status(400).json(null)
-    }
-  }
-
   async update(req, res){
     try{
 
-      const { id } = req.params;
+      const { userId } = req;
 
-      if(!id)
+      if(!userId)
         return res.status(400).json({erros: ['Id is missing']});
 
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(userId);
 
       if(!user)
         return res.status(400).json({erros: ['User Not Found']});
@@ -82,12 +55,12 @@ class UserController{
   async delete(req,res){
     try{
 
-      const { id } = req.params;
+      const { userId } = req;
 
-      if(!id)
+      if(!userId)
         return res.status(400).json({erros: ['Id is missing']});
 
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(userId);
 
       if(!user)
         return res.status(400).json({erros: ['User Not Found']});
@@ -103,6 +76,38 @@ class UserController{
     }
   }
 
+
+
+
+// desativado
+  async index(req, res){
+    try{
+      const users = await User.findAll({attributes:
+        ["id","nome","email"]
+      });
+      return res.json(users);
+    }
+    catch(err){
+      console.log(err);
+      res.status(400).json(null)
+    }
+  }
+
+  async show(req, res){
+    try{
+      const { id } = req.params;
+      const users = await User.findByPk(id);
+      if(!users)
+        return res.status(204);
+
+      const { nome, email} = users;
+      return res.json({id, nome, email});
+    }
+    catch(err){
+      console.log(err);
+      res.status(400).json(null)
+    }
+  }
 }
 
 export default new UserController;
