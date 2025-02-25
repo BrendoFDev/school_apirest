@@ -1,5 +1,5 @@
 import Aluno from '../models/Aluno'
-
+import Fotos from '../models/Foto';
 class AlunoController{
   constructor(){
     this.create = this.create.bind(this);
@@ -8,7 +8,15 @@ class AlunoController{
 
   async index(req, res){
     try{
-      const alunos = await Aluno.findAll();
+      const alunos = await Aluno.findAll({
+        attributes: ['id','nome','sobrenome','email','idade','peso','altura'],
+        order: [['id','DESC'], [Fotos, 'id','DESC']],
+        include:{
+          model:Fotos,
+          attributes:['id','filename']
+        }
+      });
+
       return res.json(alunos);
     }
     catch(error){
@@ -25,7 +33,14 @@ class AlunoController{
       if(!id)
         return req.status(400).json({errors: 'Id is Invalid or not found'});
 
-      const aluno = await Aluno.findByPk(id);
+      const aluno = await Aluno.findByPk(id,{
+        attributes: ['id','nome','sobrenome','email','idade','peso','altura'],
+        order: [['id','DESC'], [Fotos, 'id','DESC']],
+        include:{
+          model:Fotos,
+          attributes:['id','filename']
+        }
+      });
       return res.json(aluno);
 
     }

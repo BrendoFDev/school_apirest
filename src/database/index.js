@@ -9,6 +9,19 @@ const models = [Aluno, User, Foto]
 const connection = new Sequelize(databaseConfig);
 
 models.forEach((model)=> model.init(connection));
+models.forEach((model)=>{
+  if (model.associate) {
+    model.associate(connection.models);
+  }
+});
 
-models.forEach((model)=> model.associate && model.associate(models));
+// (async function createTables(){
+//   models.forEach( model => {
+//      model.drop();
+//   });
+
+//   models.forEach( model => {
+//      model.sync({force: true, alter:true});
+//   });
+// }());
 

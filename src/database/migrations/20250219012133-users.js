@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('users',{

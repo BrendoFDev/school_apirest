@@ -1,3 +1,4 @@
+
 /* eslint-disable no-undef */
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ module.exports = {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   },
+  logging: false,
   dialectOptions: {
     timezone: 'America/Sao_Paulo'
   },
