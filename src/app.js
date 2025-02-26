@@ -1,13 +1,15 @@
+/* eslint-disable no-undef */
 import dotenv from 'dotenv';
 dotenv.config();
 
-import './src/database/'
+import './database'
 import express from "express";
+import {resolve} from 'path';
 
-import alunoRoutes from './src/routes/aluno';
-import userRoutes from './src/routes/user';
-import tokenRoutes from './src/routes/token';
-import fotosRoutes from './src/routes/foto';
+import alunoRoutes from './routes/aluno';
+import userRoutes from './routes/user';
+import tokenRoutes from './routes/token';
+import fotosRoutes from './routes/foto';
 
 class App {
   constructor(){
@@ -19,6 +21,7 @@ class App {
   middlewares(){
     this.app.use(express.urlencoded({ extended:true }));
     this.app.use( express.json() );
+    this.app.use( express.static(resolve(__dirname,'uploads')));
   }
 
   routes(){

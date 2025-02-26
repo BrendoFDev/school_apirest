@@ -1,5 +1,5 @@
-import Aluno from '../models/Aluno'
-import Fotos from '../models/Foto';
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _Aluno = require('../models/Aluno'); var _Aluno2 = _interopRequireDefault(_Aluno);
+var _Foto = require('../models/Foto'); var _Foto2 = _interopRequireDefault(_Foto);
 class AlunoController{
   constructor(){
     this.create = this.create.bind(this);
@@ -8,11 +8,11 @@ class AlunoController{
 
   async index(req, res){
     try{
-      const alunos = await Aluno.findAll({
+      const alunos = await _Aluno2.default.findAll({
         attributes: ['id','nome','sobrenome','email','idade','peso','altura'],
-        order: [['id','DESC'], [Fotos, 'id','DESC']],
+        order: [['id','DESC'], [_Foto2.default, 'id','DESC']],
         include:{
-          model:Fotos,
+          model:_Foto2.default,
           attributes:['filename','url']
         }
       });
@@ -33,11 +33,11 @@ class AlunoController{
       if(!id)
         return req.status(400).json({errors: 'Id is Invalid or not found'});
 
-      const aluno = await Aluno.findByPk(id,{
+      const aluno = await _Aluno2.default.findByPk(id,{
         attributes: ['id','nome','sobrenome','email','idade','peso','altura'],
-        order: [['id','DESC'], [Fotos, 'id','DESC']],
+        order: [['id','DESC'], [_Foto2.default, 'id','DESC']],
         include:{
-          model:Fotos,
+          model:_Foto2.default,
           attributes:['filename','url']
         }
       });
@@ -62,7 +62,7 @@ class AlunoController{
   }
 
   async createAluno(body){
-   const newAluno =  await Aluno.create({
+   const newAluno =  await _Aluno2.default.create({
       nome: body.nome,
       sobrenome: body.sobrenome,
       email: body.email,
@@ -81,7 +81,7 @@ class AlunoController{
       if(!id)
         return req.status(400).json({errors: 'Id is Invalid or not found'});
 
-      const aluno = await Aluno.findByPk(id,{attributes:["id","nome","email"]});
+      const aluno = await _Aluno2.default.findByPk(id,{attributes:["id","nome","email"]});
 
       if(!aluno)
         return req.status(400).json({errors: 'Student not found'});
@@ -104,7 +104,7 @@ class AlunoController{
       if(!id)
         return req.status(400).json({errors: 'Id is Invalid or not found'});
 
-      const aluno = await Aluno.findByPk(id,{attributes:["id","nome","email"]});
+      const aluno = await _Aluno2.default.findByPk(id,{attributes:["id","nome","email"]});
 
       if(!aluno)
         return req.status(400).json({errors: 'Student not found'});
@@ -124,4 +124,4 @@ class AlunoController{
 }
 
 
-export default new AlunoController;
+exports. default = new AlunoController;
