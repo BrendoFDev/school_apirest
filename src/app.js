@@ -21,11 +21,11 @@ class App {
   middlewares(){
     this.app.use(express.urlencoded({ extended:true }));
     this.app.use( express.json() );
-    this.app.use('/images/', express.static(resolve(__dirname,'uploads')));
+    this.app.use('/images/', express.static(resolve(__dirname,'..','uploads')));
   }
 
   routes(){
-    this.app.use('/Alunos/', alunoRoutes);
+    this.app.use('/alunos/', alunoRoutes);
     this.app.use('/users/', userRoutes);
     this.app.use('/tokens/', tokenRoutes);
     this.app.use('/fotos/', fotosRoutes);
